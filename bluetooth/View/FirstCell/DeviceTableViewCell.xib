@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="DeviceTableViewCell" customModule="bluetooth" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="335" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="335" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3kF-gk-dCF">
+                        <rect key="frame" x="8" y="8" width="211.66666666666666" height="28"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XA8-sy-p5R">
+                        <rect key="frame" x="298.66666666666669" y="8" width="28.333333333333314" height="28"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="info.circle" catalog="system"/>
+                        <connections>
+                            <action selector="DeviceVC:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="eAa-eA-Sxe"/>
+                        </connections>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="未連線" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O4I-ft-aOR">
+                        <rect key="frame" x="235.66666666666663" y="8" width="55" height="28"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="XA8-sy-p5R" secondAttribute="trailing" constant="8" id="0ql-ch-cjA"/>
+                    <constraint firstItem="3kF-gk-dCF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="5NV-Id-fdX"/>
+                    <constraint firstItem="XA8-sy-p5R" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.0845921" id="Bsa-r5-PIG"/>
+                    <constraint firstItem="XA8-sy-p5R" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="C0j-Dm-0UU"/>
+                    <constraint firstItem="O4I-ft-aOR" firstAttribute="leading" secondItem="3kF-gk-dCF" secondAttribute="trailing" constant="16" id="Gfp-4h-CsJ"/>
+                    <constraint firstAttribute="bottom" secondItem="XA8-sy-p5R" secondAttribute="bottom" constant="8" id="KS7-f9-qT1"/>
+                    <constraint firstItem="O4I-ft-aOR" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="Qkb-fl-eeK"/>
+                    <constraint firstItem="XA8-sy-p5R" firstAttribute="leading" secondItem="O4I-ft-aOR" secondAttribute="trailing" constant="8" id="R5A-x5-tFe"/>
+                    <constraint firstItem="3kF-gk-dCF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="RLW-of-TiI"/>
+                    <constraint firstAttribute="bottom" secondItem="O4I-ft-aOR" secondAttribute="bottom" constant="8" id="gd8-xJ-nvb"/>
+                    <constraint firstAttribute="bottom" secondItem="3kF-gk-dCF" secondAttribute="bottom" constant="8" id="mvi-qA-WqM"/>
+                    <constraint firstItem="3kF-gk-dCF" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.63142" id="xGd-mG-lWS"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="btnInfo" destination="XA8-sy-p5R" id="6D6-8f-r05"/>
+                <outlet property="lbConnect" destination="O4I-ft-aOR" id="IK4-Sy-BPM"/>
+                <outlet property="lbDevice" destination="3kF-gk-dCF" id="Wtu-al-QOb"/>
+            </connections>
+            <point key="canvasLocation" x="127.48091603053435" y="8.4507042253521139"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="info.circle" catalog="system" width="128" height="123"/>
+    </resources>
+</document>
