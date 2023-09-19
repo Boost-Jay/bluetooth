@@ -115,6 +115,6 @@ class DeviceViewController: UIViewController, UITableViewDataSource, UITableView
 // MARK: - Protocol
 
 protocol DeviceVCDelegate: AnyObject {
-    
+
     func didForgetDevice(isClick: Bool)
 }

@@ -14,9 +14,6 @@ class MainViewController: UIViewController {
     // MARK: - IBOutlet
     
     @IBOutlet weak var tvMain: UITableView!
-    
-    @IBOutlet weak var btn: UIButton!
-    
     @IBOutlet weak var lbLightCatch: UILabel!
     
     // MARK: - Variables
@@ -27,31 +24,34 @@ class MainViewController: UIViewController {
     var connectName: [String] = []
     var selectedIndexPath: IndexPath?
     
+    var deviceConnectStatus: [String: Bool] = [:]  // 存儲裝置連接狀態的字典
+    
+    
     var connectedPeripheral: CBPeripheral?
+    var testConnectedPeripheral: CBPeripheral?
     var centralManager: CBCentralManager?
     
     //var isOpen: Bool?
     var isSelect: Bool = false
-    
-    var isChange: Bool = false {
-            didSet {
-                if isChange {
-                    // 更新 lbConnect.text
-                    if let cell = findCorrespondingCell() as? DeviceNameTableViewCell {
-                        cell.lbConnect.text = "未連接"
-                        cell.accessoryView = nil
-                    }
-                }
-                isChange = false
-            }
-        }
+    var isOpen: Bool?
+//    var isChange: Bool = false {
+//            didSet {
+//                if isChange {
+//                     更新 lbConnect.text
+//                    if let cell = findCorrespondingCell() as? DeviceNameTableViewCell {
+//                        cell.lbConnect.text = "未連接"
+//                        cell.accessoryView = nil
+////                    }
+//                }
+//                isChange = false
+//            }
+//        }
     
     // MARK: - LifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let deviceCell = DeviceNameTableViewCell()
-//        deviceCell.dnVCelldelegate = self
+
         BluetoothServices.shared.delegate = self
         setupUI()
     }
@@ -68,6 +68,7 @@ class MainViewController: UIViewController {
         lbLightCatch.layer.masksToBounds = true
         lbLightCatch.layer.borderColor = UIColor.systemGreen.cgColor
         lbLightCatch.layer.borderWidth = 3
+        lbLightCatch.textAlignment = .center
     }
     
     func setupNavigation() {
@@ -93,38 +94,38 @@ class MainViewController: UIViewController {
         tvMain.delegate = self
     }
     
-//    func jump() {
-//        // 加載 DeviceViewController 的 XIB
-//        let deviceVC = DeviceViewController()
-//
-//        // 設定 sheetPresentationController 的 detents 屬性
-//        if let sheetPresentationController = deviceVC.sheetPresentationController {
-//            sheetPresentationController.detents = [.custom(resolver: { context in
-//                300
-//            })]
-//            sheetPresentationController .preferredCornerRadius = 100
-//        }
-//
-//        // 呈現 DeviceViewController
-//        navigationController?.present(deviceVC, animated: true, completion: nil)
-//    }
+    func jump() {
+        // 加載 DeviceViewController 的 XIB
+        let deviceVC = DeviceViewController()
+
+        // 設定 sheetPresentationController 的 detents 屬性
+        if let sheetPresentationController = deviceVC.sheetPresentationController {
+            sheetPresentationController.detents = [.custom(resolver: { context in
+                300
+            })]
+            sheetPresentationController .preferredCornerRadius = 100
+        }
+
+        // 呈現 DeviceViewController
+        navigationController?.present(deviceVC, animated: true, completion: nil)
+    }
     
     // MARK: - IBAction
-//    @IBAction func jump(_ sender: Any) {
-//        // 加載 DeviceViewController 的 XIB
-//        let deviceVC = DeviceViewController(nibName: "DeviceViewController", bundle: nil)
-//
-//        // 設定 sheetPresentationController 的 detents 屬性
-//        if let sheetPresentationController = deviceVC.sheetPresentationController {
-//            sheetPresentationController.detents = [.custom(resolver: { context in
-//                300
-//            })]
-//            sheetPresentationController .preferredCornerRadius = 100
-//        }
-//
-//        // 呈現 DeviceViewController
-//        present(deviceVC, animated: true, completion: nil)
-//    }
+    @IBAction func jump(_ sender: Any) {
+        // 加載 DeviceViewController 的 XIB
+        let deviceVC = DeviceViewController(nibName: "DeviceViewController", bundle: nil)
+
+        // 設定 sheetPresentationController 的 detents 屬性
+        if let sheetPresentationController = deviceVC.sheetPresentationController {
+            sheetPresentationController.detents = [.custom(resolver: { context in
+                300
+            })]
+            sheetPresentationController .preferredCornerRadius = 100
+        }
+
+        // 呈現 DeviceViewController
+        present(deviceVC, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Extension
@@ -141,12 +142,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            
-//            if indexPath.row == 0 {
-//                return 100
-//            } else {
-                return 50
-//            }
+
+        return 50
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -221,6 +218,19 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.accessoryView = nil
             }
             
+            let deviceName =  connectName[indexPath.row]
+                cell.lbDevice.text = deviceName
+
+                // 初始設定 lbConnect 的狀態
+                if let isConnected = deviceConnectStatus[deviceName] {
+                    cell.lbConnect.text = isConnected ? "已連接" : "未連接"
+                    // 根據連接狀態更改 lbConnect 文字顏色
+                    cell.lbConnect.textColor = !isConnected ? UIColor.red : UIColor.blue
+                } else {
+                    cell.lbConnect.text = "未連接"
+                    deviceConnectStatus[deviceName] = false
+                }
+            
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "textEndCell", for: indexPath)
@@ -273,44 +283,32 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if let cell = tableView.cellForRow(at: indexPath) as? DeviceNameTableViewCell {
-            
-            cell.lbConnect.text = "已連接"
-            
-            if indexPath == selectedIndexPath {
-                cell.accessoryView = nil
-                selectedIndexPath = nil
-            } else {
-                let checkmarkView = UIImageView(image: UIImage(systemName: "checkmark"))
-                cell.accessoryView = checkmarkView
-                selectedIndexPath = indexPath
-            }
-        }
-        
+        let deviceCell = DeviceViewController()
+        deviceCell.deviceVCdelegate = self
         
         let peripheral = connectPeripherals[indexPath.row]
         
-//        let selectedCell = tableView.cellForRow(at: indexPath)
-//        for cell in tableView.visibleCells {
-//            if cell != selectedCell {
-//
-//                cell.accessoryView = nil
-//            }
-//        }
-//        let checkmarkView = UIImageView(image: UIImage(systemName: "checkmark"))
-//        selectedCell?.accessoryView = checkmarkView
-//
-//        selectedCell?.isSelected = true
+        if let cell = tableView.cellForRow(at: indexPath) as? DeviceNameTableViewCell {
+            
+        let deviceName = cell.lbDevice.text!
+
+            // 更改連接狀態
+            if let isConnected = deviceConnectStatus[deviceName] {
+                deviceConnectStatus[deviceName] = !isConnected
+            }
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
         BluetoothServices.shared.connectPeripheral(peripheral: peripheral)
+        tvMain.reloadData()
     }
     
-//    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-//        if indexPath.section == 0 {
-//            return false
-//        } else {
-//            return true
-//        }
-//    }
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.section == 0 {
+            return false
+        } else {
+            return true
+        }
+    }
     
     @objc func switchChanged(_ sender: UISwitch) {
         isSwitchOn = sender.isOn  // 更新變數
@@ -320,6 +318,11 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension MainViewController: BluetoothServicesDelegate, CBPeripheralDelegate {
+    
+    func getDeviceName(peripheral: CBPeripheral) {
+        testConnectedPeripheral = peripheral
+    }
+    
     
     func didUpdateConnectionStatus(_ status: String) {
         print("123")
@@ -339,6 +342,7 @@ extension MainViewController: BluetoothServicesDelegate, CBPeripheralDelegate {
                 connectPeripherals.append(peripheral)
             }
         }
+        
         DispatchQueue.main.async { [self] in
             tvMain.reloadData()
         }
@@ -350,19 +354,22 @@ extension MainViewController: BluetoothServicesDelegate, CBPeripheralDelegate {
             lbLightCatch.text = "\(value)"
         }
     }
+    
+    
+    
 }
 
 
 // MARK: - Protocol
 
 extension MainViewController: DeviceNameCellDelegate {
-    
-    func didTapInfoButton() {
+   
+    func didTapInfoButton(isClick:Bool) {
         
-//        isOpen = isClick
-//        if isOpen == true {
+        isOpen = isClick
+        if isOpen == true {
         let deviceVC = DeviceViewController()
-        
+            deviceVC.deviceVCdelegate = self
         // 設定 sheetPresentationController 的 detents 屬性
         if let sheetPresentationController = deviceVC.sheetPresentationController {
             sheetPresentationController.detents = [.custom(resolver: { context in
@@ -370,31 +377,33 @@ extension MainViewController: DeviceNameCellDelegate {
             })]
             sheetPresentationController .preferredCornerRadius = 100
         }
-        
-        // navigationController?.present(deviceVC, animated: true)
         present(deviceVC, animated: true, completion: nil)
-//        } else {
-//            return
-//        }
+        } else {
+            return
+        }
     }
 }
 
-extension MainViewController:DeviceVCDelegate {
+extension MainViewController: DeviceVCDelegate {
     
     func didForgetDevice(isClick: Bool) {
-        
-        if isSelect == isClick {
             
-            // 檢查是否有已連接的藍牙裝置
-            if let peripheral = connectedPeripheral {
-                // 使用centralManager來取消連接
-                centralManager?.cancelPeripheralConnection(peripheral)
+        if isClick {
+            
+            // 如果有連接的藍芽裝置
+            if let peripheral = testConnectedPeripheral {
+                // 使用 BluetoothServices 來斷開連接
+                BluetoothServices.shared.disconnectPeripheral(peripheral: peripheral)
+                print("嘗試斷開與 \(peripheral) 的連接")
+                // 更新裝置連接狀態
+                if let deviceName = peripheral.name {
+                    deviceConnectStatus[deviceName] = false  // 設置為未連接
+                }
+
+                // 重新載入 tableView 以反映變更
+                tvMain.reloadData()
             }
-            
-            isChange = isClick
         }
-        
-       
     }
 }
 

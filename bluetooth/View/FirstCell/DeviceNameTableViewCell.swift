@@ -22,8 +22,7 @@ class DeviceNameTableViewCell: UITableViewCell {
     
     @IBAction func btnInfoTapped(_ sender: Any) {
 
-        //dnVCelldelegate?.didTapInfoButton(isClick: !click)
-        dnVCelldelegate?.didTapInfoButton()
+        dnVCelldelegate?.didTapInfoButton(isClick: !click)
     }
 }
 
@@ -31,7 +30,6 @@ class DeviceNameTableViewCell: UITableViewCell {
 
 protocol DeviceNameCellDelegate: AnyObject {
     
-    //func didTapInfoButton(isClick: Bool)
-    func didTapInfoButton()
+    func didTapInfoButton(isClick: Bool)
 }
 

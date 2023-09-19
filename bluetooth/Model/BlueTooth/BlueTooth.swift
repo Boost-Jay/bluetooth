@@ -128,8 +128,7 @@ extension BluetoothServices: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager,
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any],
-                        rssi RSSI: NSNumber,
-                        error: Error?) {
+                        rssi RSSI: NSNumber) {
         for newPeripheral in blePeripherals {
             if peripheral.name == newPeripheral.name {
                 return
@@ -140,13 +139,6 @@ extension BluetoothServices: CBCentralManagerDelegate {
             blePeripherals.append(peripheral)
             print(name)
         }
-        
-        if error == nil {
-            print("成功斷開藍牙連線")
-        } else {
-            print("斷開藍牙連線時發生錯誤: \(error!.localizedDescription)")
-        }
-        
         delegate?.getBLEPeripherals(peripherals: blePeripherals)
     }
     
@@ -155,6 +147,7 @@ extension BluetoothServices: CBCentralManagerDelegate {
         peripheral.delegate = self
         peripheral.discoverServices(nil)
         delegate?.didUpdateConnectionStatus("Connected")
+        delegate?.getDeviceName(peripheral: peripheral)
     }
     
     /// 讀取特徵值
@@ -279,4 +272,6 @@ protocol BluetoothServicesDelegate: NSObjectProtocol {
     func getBlEPeripheralValue(value: UInt8)
     
     func didUpdateConnectionStatus(_ status: String)
+    
+    func getDeviceName(peripheral: CBPeripheral)
 }
